@@ -12,7 +12,7 @@ url = "https://www.checkiday.com/"
 cwd = os.getcwd()
  
 class SlackCalendar(object):
-    def __init__ (self, creds_file = "creds.txt", datefile=".date.txt", post_time='8:00', frequency = 15):
+    def __init__ (self, creds_file = "creds.txt", datefile=".date.txt", post_time='8:00', frequency = 15, channel = '#oh_happy_day'):
         self.creds_file = creds_file
         self.read_creds()
         
@@ -24,8 +24,11 @@ class SlackCalendar(object):
         
         assert frequency < 60
         self.frequency = frequency
+
+	self.channel = channel
         
         self.client = WebClient(self.creds['Token'])
+
         
     def check_time(self):
         now = datetime.now()
@@ -117,7 +120,7 @@ For more info, check {}
     def post_message(self, msg):
         try:
             response = self.client.chat_postMessage(
-                channel='#oh_happy_day',
+                channel=self.channel,
                 text=msg)
         except SlackApiError as e:
             # You will get a SlackApiError if "ok" is False
